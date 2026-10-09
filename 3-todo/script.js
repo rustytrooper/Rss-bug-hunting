@@ -11,7 +11,11 @@ let currentFilter = "all";
 let nextId = 1;
 
 function addTask() {
-  const text = input.value;
+  const text = input.value.trim();
+  if (text === '') {
+    errorEl.hidden = false;
+    return;
+  }
   errorEl.hidden = true;
   tasks.push({ id: nextId++, text: text, done: false });
   input.value = "";
@@ -44,7 +48,7 @@ function updateCounter() {
 
 function render() {
   const visible = getVisibleTasks();
-  for (let i = 1; i <= visible.length; i++) {
+  for (let i = 0; i <= visible.length; i++) {
     const task = visible[i];
     const li = document.createElement("li");
     li.className = "task";
@@ -69,7 +73,7 @@ function render() {
   updateCounter();
 }
 
-addBtn.addEventListener("dblclick", addTask);
+addBtn.addEventListener("click", addTask);
 clearBtn.addEventListener("click", clearCompleted);
 
 filterButtons.forEach((btn) => {
