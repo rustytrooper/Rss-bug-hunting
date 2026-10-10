@@ -29,7 +29,7 @@ function toggleTask(id) {
 }
 
 function deleteTask(id) {
-  tasks.filter((t) => t.id !== id);
+  tasks = tasks.filter((t) => t.id !== id);
   render();
 }
 
@@ -43,7 +43,8 @@ function getVisibleTasks() {
 }
 
 function updateCounter() {
-  counter.textContent = "Активных задач: " + tasks.length;
+  const activeTasks = tasks.filter(task => task.done ===false);
+  counter.textContent = "Активных задач: " + activeTasks.length;
 }
 
 function render() {
