@@ -42,19 +42,19 @@ function addToCart(id) {
   } else {
     cart.push({ id: product.id, name: product.name, price: product.price, qty: 1 });
   }
-  
+
   renderCart();
 }
 
 function increaseQty(id) {
   const item = cart.find((i) => i.id === id);
-  item.qty;
+  item.qty++;
   renderCart();
 }
 
 function decreaseQty(id) {
   const item = cart.find((i) => i.id === id);
-  item.qty--;
+  item.qty === 0 ? 0 : item.qty--;
   renderCart();
 }
 
@@ -79,7 +79,7 @@ function renderCart() {
   cartItemsEl.innerHTML = "";
   let total = "";
   cart.forEach((item) => {
-    const lineTotal = item.price;
+    const lineTotal = item.price * item.qty;
     const li = document.createElement("li");
     li.className = "cart-item";
     li.innerHTML = `<span>${item.name}</span>
