@@ -24,7 +24,7 @@ function renderProducts() {
     card.innerHTML = `<h3>${p.name}</h3><p>${p.price} ₽</p>`;
     const btn = document.createElement("button");
     btn.textContent = "В корзину";
-    btn.addEventListener("click", addToCart);
+    btn.addEventListener("click", () => {addToCart(p.id)});
     card.appendChild(btn);
     productsEl.appendChild(card);
   });
@@ -34,45 +34,55 @@ function addToCart(id) {
   const product = products.find((p) => p.id === id);
   if (!product) {
     return;
+  } 
+  const existing = cart.find((item) => item.id === product.id);
+
+  if (existing) {
+    existing.qty += 1;
+  } else {
+    cart.push({ id: product.id, name: product.name, price: product.price, qty: 1 });
   }
-  cart.push({ id: product.id, name: product.name, price: product.price, qty: 1 });
+
   renderCart();
 }
 
 function increaseQty(id) {
   const item = cart.find((i) => i.id === id);
-  item.qty;
+  item.qty++;
+  discount = 0; 
   renderCart();
 }
 
 function decreaseQty(id) {
   const item = cart.find((i) => i.id === id);
-  item.qty--;
+  item.qty === 0 ? 0 : item.qty--;
+  discount = 0; 
   renderCart();
 }
 
 function removeItem(id) {
   cart = cart.filter((i) => i.id !== id);
+  discount = 0; 
   renderCart();
 }
 
 function applyPromo() {
-  if ((promoInput.value = "SALE10")) {
-    discount = 0.1;
-  }
+  const promoValue = promoInput.value.trim();
+  discount = promoValue === "SALE10" ? 0.1 : 0;
   renderCart();
 }
 
 function clearCart() {
-  cart.splice(0, 1);
+  cart = [];
+  discount = 0; 
   renderCart();
 }
 
 function renderCart() {
   cartItemsEl.innerHTML = "";
-  let total = "";
+  let total = 0;
   cart.forEach((item) => {
-    const lineTotal = item.price;
+    const lineTotal = item.price * item.qty;
     const li = document.createElement("li");
     li.className = "cart-item";
     li.innerHTML = `<span>${item.name}</span>
@@ -91,10 +101,10 @@ function renderCart() {
   if (discount) {
     total = total - total * discount;
   }
+ emptyMsg.hidden = cart.length !== 0
 
-  badgeEl.textContent = cart.length;
+  badgeEl.textContent = cart.reduce((acc,el) => acc + el.qty,0);
   totalEl.textContent = total;
-  emptyMsg.hidden = true;
 }
 
 promoBtn.addEventListener("click", applyPromo);
