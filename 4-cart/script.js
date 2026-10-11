@@ -49,35 +49,38 @@ function addToCart(id) {
 function increaseQty(id) {
   const item = cart.find((i) => i.id === id);
   item.qty++;
+  discount = 0; 
   renderCart();
 }
 
 function decreaseQty(id) {
   const item = cart.find((i) => i.id === id);
   item.qty === 0 ? 0 : item.qty--;
+  discount = 0; 
   renderCart();
 }
 
 function removeItem(id) {
   cart = cart.filter((i) => i.id !== id);
+  discount = 0; 
   renderCart();
 }
 
 function applyPromo() {
-  if ((promoInput.value = "SALE10")) {
-    discount = 0.1;
-  }
+  const promoValue = promoInput.value.trim();
+  discount = promoValue === "SALE10" ? 0.1 : 0;
   renderCart();
 }
 
 function clearCart() {
   cart.splice(0, 1);
+  discount = 0; 
   renderCart();
 }
 
 function renderCart() {
   cartItemsEl.innerHTML = "";
-  let total = "";
+  let total = 0;
   cart.forEach((item) => {
     const lineTotal = item.price * item.qty;
     const li = document.createElement("li");
@@ -99,7 +102,7 @@ function renderCart() {
     total = total - total * discount;
   }
 
-  badgeEl.textContent = cart.length;
+  badgeEl.textContent = cart.reduce((acc,el) => acc + el.qty,0);
   totalEl.textContent = total;
   emptyMsg.hidden = true;
 }
